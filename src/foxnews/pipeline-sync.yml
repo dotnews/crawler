@@ -1,0 +1,12 @@
+---
+pipeline: foxnews
+
+stages:
+- crawler: index.js
+  pipe: each
+
+- crawler: category.js
+  pipe: each
+
+- crawler: article.js
+  index: article

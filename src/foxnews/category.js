@@ -6,7 +6,7 @@ const puppeteer = require('puppeteer');
   const len = process.env.LEN || 100;
   const timeout = process.env.TIMEOUT || 15000;
 
-  // TODO read category url from stdin
+  // TODO read category from stdin
   await page.goto('http://www.foxnews.com/category/tech/topics/innovation.html', {
     waitUntil: 'domcontentloaded',
   });
@@ -28,7 +28,7 @@ const puppeteer = require('puppeteer');
   const titles = await page.$$('.js-infinite-list .article .title');
   for (const title of titles) {
     const href = await title.$eval('a', el => el.href);
-    articles.add(href);
+    articles.add({href});
   }
 
   console.log(JSON.stringify(Array.from(articles), 0, 2));

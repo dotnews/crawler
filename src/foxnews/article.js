@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer');
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  // TODO read article url from stdin
+  // TODO read article from stdin
   await page.goto(
     'http://www.foxnews.com/tech/2018/07/11/blade-runner-becomes-reality-two-flying-taxi-startups-get-pentagon-funding.html',
     {
