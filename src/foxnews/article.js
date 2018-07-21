@@ -1,8 +1,9 @@
 const puppeteer = require('puppeteer');
+const config = require('../config');
 const stdIn = require('fs').readFileSync(0);
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch(config);
   const page = await browser.newPage();
   const article = JSON.parse(stdIn.toString());
 

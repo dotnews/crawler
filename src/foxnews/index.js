@@ -1,7 +1,8 @@
 const puppeteer = require('puppeteer');
+const config = require('../config');
 
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch(config);
   const page = await browser.newPage();
 
   await page.goto('http://www.foxnews.com', {
