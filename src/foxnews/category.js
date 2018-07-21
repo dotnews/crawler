@@ -1,13 +1,14 @@
 const puppeteer = require('puppeteer');
+const stdIn = require('fs').readFileSync(0);
 
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  const len = process.env.LEN || 100;
+  const len = process.env.LEN || 20;
   const timeout = process.env.TIMEOUT || 15000;
+  const category = JSON.parse(stdIn.toString());
 
-  // TODO read category from stdin
-  await page.goto('http://www.foxnews.com/category/tech/topics/innovation.html', {
+  await page.goto(category.subCategoryHref, {
     waitUntil: 'domcontentloaded',
   });
 
@@ -21,14 +22,20 @@ const puppeteer = require('puppeteer');
       len,
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
   const articles = new Set();
   const titles = await page.$$('.js-infinite-list .article .title');
   for (const title of titles) {
     const href = await title.$eval('a', el => el.href);
-    articles.add({href});
+    articles.add({
+      href,
+      category: category.name,
+      categoryHref: category.href,
+      subCategory: category.subCategory,
+      subCategoryHref: category.subCategoryHref,
+    });
   }
 
   console.log(JSON.stringify(Array.from(articles), 0, 2));

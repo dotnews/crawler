@@ -1,27 +1,31 @@
 const puppeteer = require('puppeteer');
+const stdIn = require('fs').readFileSync(0);
 
 (async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
+  const article = JSON.parse(stdIn.toString());
 
-  // TODO read article from stdin
-  await page.goto(
-    'http://www.foxnews.com/tech/2018/07/11/blade-runner-becomes-reality-two-flying-taxi-startups-get-pentagon-funding.html',
-    {
-      waitUntil: 'domcontentloaded',
-    },
-  );
+  await page.goto(article.href, {
+    waitUntil: 'domcontentloaded',
+  });
 
-  const article = await page.$eval('.main-content .article-wrap', el => {
-    // TODO handle edge cases
+  const content = await page.$eval('.main-content .article-wrap', el => {
+    const title = el.querySelector('h1');
+    const author = el.querySelector('.author-byline [rel=author]');
+    const date = el.querySelector('.article-date time');
+    const body = el.querySelector('.article-body');
+
     return {
-      title: el.querySelector('h1').innerText,
-      author: el.querySelector('.author-byline span').innerText,
-      date: el.querySelector('.article-date time').getAttribute('data-time-published'),
-      body: el.querySelector('.article-body').innerHTML,
+      title: title && title.innerText,
+      author: author && author.innerText,
+      authorHref: author && author.href,
+      date: date && date.getAttribute('data-time-published'),
+      body: body && body.innerHTML,
     };
   });
 
+  Object.assign(article, content);
   console.log(JSON.stringify(article, 0, 2));
   await browser.close();
 })();
