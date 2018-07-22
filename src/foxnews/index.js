@@ -39,5 +39,6 @@ const config = require('../config');
   }
 
   console.log(JSON.stringify(categories, 0, 2));
+  await page.close();
   await browser.close();
 })();

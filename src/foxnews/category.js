@@ -13,18 +13,14 @@ const stdIn = require('fs').readFileSync(0);
     waitUntil: 'domcontentloaded',
   });
 
-  try {
-    await page.waitForFunction(
-      len => {
-        document.querySelector('.js-load-more a').click();
-        return document.querySelectorAll('.js-infinite-list .article .title a').length > len;
-      },
-      {timeout},
-      len,
-    );
-  } catch (e) {
-    console.error(e);
-  }
+  await page.waitForFunction(
+    len => {
+      document.querySelector('.js-load-more a').click();
+      return document.querySelectorAll('.js-infinite-list .article .title a').length > len;
+    },
+    {timeout},
+    len,
+  );
 
   const articles = new Set();
   const titles = await page.$$('.js-infinite-list .article .title');
@@ -40,5 +36,6 @@ const stdIn = require('fs').readFileSync(0);
   }
 
   console.log(JSON.stringify(Array.from(articles), 0, 2));
+  await page.close();
   await browser.close();
 })();
