@@ -2,16 +2,16 @@
 id: foxnews
 
 stages:
-- process: node $CRAWLER_ROOT/src/foxnews/index.js
+- process: node index.js
   subscribe: index
   publish: category
   pipe: each
 
-- process: node $CRAWLER_ROOT/src/foxnews/category.js
+- process: node category.js
   subscribe: category
   publish: article
   pipe: each
 
-- process: node $CRAWLER_ROOT/src/foxnews/article.js
+- process: node article.js
   subscribe: article
   publish: elastic
